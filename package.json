@@ -19,7 +19,7 @@
   ],
   "bugs": "https://github.com/radixdlt/web-components/issues",
   "main": "dist/web-components.mjs",
-  "license": "Apache-2.0",
+  "license": "SEE LICENSE IN RADIX-SOFTWARE-EULA",
   "exports": {
     ".": {
       "import": {
@@ -35,7 +35,8 @@
   "types": "./types/index.d.ts",
   "files": [
     "dist",
-    "types"
+    "types",
+    "RADIX-SOFTWARE-EULA"
   ],
   "scripts": {
     "dev": "vite serve examples",
