@@ -9,6 +9,7 @@
     - [Events](#events)
     - [HTML](#html)
     - [Typescript](#typescript)
+- [License](#license)
 
 ## Install
 
@@ -81,3 +82,7 @@ const onClose = (event: Event) => {
 
 radixEulaElement.addEventListener('onClose', onClose)
 ```
+
+# License
+
+The web components code is released under [Apache 2.0 license](LICENSE). Binaries are licensed under the [Radix Software EULA](http://www.radixdlt.com/terms/genericEULA)
