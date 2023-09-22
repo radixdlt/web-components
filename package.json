@@ -46,6 +46,7 @@
     "storybook": "storybook dev -p 6006",
     "build:storybook": "storybook build",
     "prettier": "prettier --cache --check src",
+    "prettier:fix": "prettier --cache --write src",
     "pre-push": "npm run prettier && npm run build && npm run build:storybook"
   },
   "engines": {

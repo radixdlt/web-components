@@ -1,18 +1,20 @@
-import { LitElement, html } from 'lit'
+import { LitElement, css, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { themeCSS, variablesCSS } from '../../styles/theme'
 import { Mode } from '../../_types'
 import Cookies from 'js-cookie'
-import '../modal/modal'
-import '../modal/modal-button'
-import '../modal/modal-close-button'
-import '../link/link'
-import '../checkbox/checkbox'
+import { Modal } from '../base-components/modal'
+import { CloseButton } from '../base-components/close-button'
+import { Box } from '../base-components/box'
+import { Checkbox } from '../base-components/checkbox'
+import { Link } from '../base-components/link'
+import { Button } from '../base-components/button'
 
-export const hasAcceptedEula = (cookieName = 'eulaAccepted') =>
-  !!Cookies.get(cookieName)
-export const acceptEula = (cookieName = 'eulaAccepted') => {
-  Cookies.set(cookieName, 'true')
+export const EulaCookieHelper = {
+  hasAcceptedEula: (cookieName = 'eulaAccepted') => !!Cookies.get(cookieName),
+  acceptEula: (cookieName = 'eulaAccepted') =>
+    !!Cookies.set(cookieName, 'true'),
+  Cookies,
 }
 
 @customElement('radix-eula')
@@ -37,7 +39,7 @@ export class RadixEula extends LitElement {
     type: Boolean,
     reflect: true,
   })
-  show = true
+  show = false
 
   @property({
     type: Boolean,
@@ -50,62 +52,120 @@ export class RadixEula extends LitElement {
       new CustomEvent('onClose', {
         bubbles: true,
         composed: true,
+        detail: {
+          eulaAccepted: EulaCookieHelper.hasAcceptedEula(this.cookieName),
+        },
       })
     )
   }
 
   onAccept() {
-    acceptEula()
+    EulaCookieHelper.acceptEula()
     this.show = false
     this.dispatchEvent(
-      new CustomEvent('onAccept', {
+      new CustomEvent('onClose', {
         bubbles: true,
         composed: true,
+        detail: {
+          eulaAccepted: EulaCookieHelper.hasAcceptedEula(this.cookieName),
+        },
       })
     )
   }
 
   render() {
-    if (this.show)
-      return html`<radix-modal ?show=${this.show}>
-        <radix-modal-close-button
-          @onClick=${() => this.onClose()}
-          style="position: absolute; right: 1rem;"
-        >
-          ></radix-modal-close-button
-        >
-        <div style="font-size: 18px; font-weight: 600; margin-bottom: 1rem;">
-          EULA License
-        </div>
-        <div style="font-size: 16px; margin-bottom: 1rem;">
-          You must accept the terms of the End-User Licence Agreement (EULA)
-        </div>
-        <radix-checkbox
-          id="eula-agreement"
-          style="display: flex;"
-          @onChange=${(ev: CustomEvent) => {
-            this.checked = ev.detail
-          }}
-          >I agree with
-          <radix-link
-            href=${this.url}
-            style="align-self: flex-end; margin-left: 0.2rem;"
-            >EULA agreement</radix-link
-          ></radix-checkbox
-        >
-        <div style="width: 180px; align-self: flex-end;">
-          <radix-modal-button
-            ?disabled=${!this.checked}
-            @onClick=${() => this.onAccept()}
-            >I agree</radix-modal-button
-          >
-        </div>
-      </radix-modal>`
-
-    return null
+    return Modal.html({
+      show: this.show,
+      children: html`
+        ${CloseButton.html({
+          onClick: () => this.onClose(),
+        })}
+        ${Box.html({
+          children: html`EULA License`,
+          className: 'header',
+        })}
+        ${Box.html({
+          children: html`You must accept the terms of the End-User License
+          Agreement (EULA)`,
+          className: 'text',
+        })}
+        ${Checkbox.html({
+          checked: this.checked,
+          onChange: (nextValue) => {
+            this.checked = nextValue
+          },
+          children: html`I agree with
+          ${Link.html({
+            href: this.url,
+            children: html`EULA agreement`,
+            style: { alignSelf: 'flex-end', marginLeft: '0.2rem' },
+          })}`,
+        })}
+        ${Button.html({
+          disabled: !this.checked,
+          onClick: () => {
+            this.onAccept()
+          },
+          children: html`I agree`,
+        })}
+      `,
+    })
   }
 
-  static styles = [variablesCSS, themeCSS]
+  static styles = [
+    variablesCSS,
+    themeCSS,
+    Modal.css,
+    Checkbox.css,
+    Button.css,
+    CloseButton.css,
+    Link.css,
+    css`
+      .close-button {
+        position: absolute;
+      }
+
+      .header {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .text {
+        font-size: 16px;
+        margin-bottom: 1rem;
+      }
+
+      .button {
+        margin-top: 1rem;
+        align-self: flex-end;
+      }
+
+      .modal {
+        text-align: center;
+      }
+
+      .checkbox {
+        align-self: center;
+      }
+
+      @media (min-width: 768px) {
+        .close-button {
+          right: 1rem;
+        }
+        .modal {
+          text-align: left;
+        }
+        .button {
+          width: 180px;
+          margin-top: 0;
+        }
+        .checkbox {
+          align-self: self-start;
+        }
+      }
+    `,
+  ]
 }
 
 declare global {

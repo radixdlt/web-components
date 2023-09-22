@@ -10,7 +10,12 @@ export default meta
 type Story = StoryObj
 
 export const Primary: Story = {
-  render: (args) => html` <radix-eula ?show=${args.show}></radix-eula>`,
+  render: (args) =>
+    html` <radix-eula
+      ?show=${args.show}
+      url="https://radixdlt.com"
+      mode=${args.mode}
+    ></radix-eula>`,
   argTypes: {
     mode: {
       options: ['light', 'dark'],
@@ -19,7 +24,6 @@ export const Primary: Story = {
   },
   args: {
     show: true,
-    showCloseButton: true,
-    buttonDisabled: true,
+    mode: 'light',
   },
 }
