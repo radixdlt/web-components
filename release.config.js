@@ -15,6 +15,10 @@ module.exports = {
         preset: 'conventionalcommits',
         releaseRules: [
           {
+            type: 'major',
+            release: 'major',
+          },
+          {
             type: 'refactor',
             release: 'patch',
           },
@@ -69,6 +73,10 @@ module.exports = {
         },
         presetConfig: {
           types: [
+            {
+              type: 'major',
+              release: 'major',
+            },
             {
               type: 'feat',
               section: ':sparkles: Features',
